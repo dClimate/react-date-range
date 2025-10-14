@@ -62,6 +62,7 @@ export default {
   timeWheelScroller: 'rdrTimeWheelScroller',
   timeWheelItem: 'rdrTimeWheelItem',
   timeWheelItemActive: 'rdrTimeWheelItemActive',
+  timeWheelItemDisabled: 'rdrTimeWheelItemDisabled',
   timeWheelHighlight: 'rdrTimeWheelHighlight',
   timeWheelPadding: 'rdrTimeWheelPadding',
 };

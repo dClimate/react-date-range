@@ -78,6 +78,17 @@
   background: rgba(61, 145, 255, 0.08);
 }
 
+.rdrTimeWheelItemDisabled {
+  color: #dc3545;
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(220, 53, 69, 0.05);
+
+  &:hover {
+    background: rgba(220, 53, 69, 0.05);
+  }
+}
+
 .rdrTimeWheelDisabled {
   opacity: 0.5;
   pointer-events: none;

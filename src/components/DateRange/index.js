@@ -140,11 +140,20 @@ class DateRange extends Component {
     this.setState({ preview: { ...val.range, color } });
   };
   handleTimeChange = (date, isStart) => {
-    const { onChange, ranges } = this.props;
+    const { onChange, ranges, minTime, maxTime } = this.props;
     const focusedRange = this.props.focusedRange || this.state.focusedRange;
     const focusedRangeIndex = focusedRange[0];
     const selectedRange = ranges[focusedRangeIndex];
     if (!selectedRange) return;
+
+    // Validate time is within min/max absolute datetime bounds
+    if (minTime && typeof minTime === 'object' && date < minTime) {
+      return; // Date is before minimum allowed datetime
+    }
+
+    if (maxTime && typeof maxTime === 'object' && date > maxTime) {
+      return; // Date is after maximum allowed datetime
+    }
 
     const key = selectedRange.key || `range${focusedRangeIndex + 1}`;
     onChange({
@@ -156,7 +165,7 @@ class DateRange extends Component {
   };
 
   render() {
-    const { showTimePicker, showHours, showMinutes, ranges } = this.props;
+    const { showTimePicker, showHours, showMinutes, ranges, minTime, maxTime } = this.props;
     const focusedRange = this.props.focusedRange || this.state.focusedRange;
     const focusedRangeIndex = focusedRange[0];
     const selectedRange = ranges[focusedRangeIndex];
@@ -189,6 +198,8 @@ class DateRange extends Component {
                 showHours={showHours}
                 showMinutes={showMinutes}
                 disabled={selectedRange.disabled}
+                minTime={minTime}
+                maxTime={maxTime}
                 styles={this.styles}
                 ariaLabels={this.props.ariaLabels}
               />
@@ -201,6 +212,8 @@ class DateRange extends Component {
                 showHours={showHours}
                 showMinutes={showMinutes}
                 disabled={selectedRange.disabled}
+                minTime={minTime}
+                maxTime={maxTime}
                 styles={this.styles}
                 ariaLabels={this.props.ariaLabels}
               />
@@ -235,6 +248,8 @@ DateRange.propTypes = {
   showTimePicker: PropTypes.bool,
   showHours: PropTypes.bool,
   showMinutes: PropTypes.bool,
+  minTime: PropTypes.object, // Date object representing absolute minimum datetime
+  maxTime: PropTypes.object, // Date object representing absolute maximum datetime
 };
 
 export default DateRange;
