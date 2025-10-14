@@ -1,0 +1,84 @@
+.rdrTimePickerContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 20px 15px;
+  border-left: 1px solid #eff2f7;
+  background: #fff;
+  min-width: 200px;
+  gap: 20px;
+}
+
+.rdrTimePickerSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rdrTimePickerWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.rdrTimePicker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.rdrTimePickerLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: #849095;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rdrTimePickerDivider {
+  font-size: 24px;
+  font-weight: 600;
+  color: #7d888d;
+  margin: 0 8px;
+  margin-top: 24px;
+}
+
+.rdrTimeWheel {
+  width: 60px;
+  height: 250px;
+  overflow: hidden;
+}
+
+.rdrTimeWheelScroller {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.rdrTimeWheelItem {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #7d888d;
+  user-select: none;
+  cursor: pointer;
+
+  &:hover {
+    background: #f4f5f7;
+  }
+}
+
+.rdrTimeWheelItemActive {
+  color: #3d91ff;
+  font-weight: 600;
+  background: rgba(61, 145, 255, 0.08);
+}
+
+.rdrTimeWheelDisabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

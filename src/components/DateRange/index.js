@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Calendar from '../Calendar';
+import TimePicker from '../TimePicker';
 import { rangeShape } from '../DayCell';
 import { findNextRangeIndex, generateStyles } from '../../utils';
-import { isBefore, differenceInCalendarDays, addDays, min, isWithinInterval, max } from 'date-fns';
+import { isBefore, differenceInCalendarDays, addDays, min, isWithinInterval, max, setHours, setMinutes, getHours, getMinutes } from 'date-fns';
 import classnames from 'classnames';
 import coreStyles from '../../styles';
 
@@ -97,10 +98,25 @@ class DateRange extends Component {
     const selectedRange = ranges[focusedRangeIndex];
     if (!selectedRange) return;
     const newSelection = this.calcNewSelection(value, isSingleValue);
+
+    // Preserve time from existing dates when changing date
+    let { startDate, endDate } = newSelection.range;
+    if (selectedRange.startDate && startDate) {
+      const hours = getHours(selectedRange.startDate);
+      const minutes = getMinutes(selectedRange.startDate);
+      startDate = setMinutes(setHours(startDate, hours), minutes);
+    }
+    if (selectedRange.endDate && endDate) {
+      const hours = getHours(selectedRange.endDate);
+      const minutes = getMinutes(selectedRange.endDate);
+      endDate = setMinutes(setHours(endDate, hours), minutes);
+    }
+
     onChange({
       [selectedRange.key || `range${focusedRangeIndex + 1}`]: {
         ...selectedRange,
-        ...newSelection.range,
+        startDate,
+        endDate,
       },
     });
     this.setState({
@@ -123,24 +139,75 @@ class DateRange extends Component {
     const color = ranges[focusedRange[0]]?.color || rangeColors[focusedRange[0]] || color;
     this.setState({ preview: { ...val.range, color } });
   };
+  handleTimeChange = (date, isStart) => {
+    const { onChange, ranges } = this.props;
+    const focusedRange = this.props.focusedRange || this.state.focusedRange;
+    const focusedRangeIndex = focusedRange[0];
+    const selectedRange = ranges[focusedRangeIndex];
+    if (!selectedRange) return;
+
+    const key = selectedRange.key || `range${focusedRangeIndex + 1}`;
+    onChange({
+      [key]: {
+        ...selectedRange,
+        [isStart ? 'startDate' : 'endDate']: date,
+      },
+    });
+  };
+
   render() {
+    const { showTimePicker, showHours, showMinutes, ranges } = this.props;
+    const focusedRange = this.props.focusedRange || this.state.focusedRange;
+    const focusedRangeIndex = focusedRange[0];
+    const selectedRange = ranges[focusedRangeIndex];
+
     return (
-      <Calendar
-        focusedRange={this.state.focusedRange}
-        onRangeFocusChange={this.handleRangeFocusChange}
-        preview={this.state.preview}
-        onPreviewChange={value => {
-          this.updatePreview(value ? this.calcNewSelection(value) : null);
-        }}
-        {...this.props}
-        displayMode="dateRange"
-        className={classnames(this.styles.dateRangeWrapper, this.props.className)}
-        onChange={this.setSelection}
-        updateRange={val => this.setSelection(val, false)}
-        ref={target => {
-          this.calendar = target;
-        }}
-      />
+      <div className={this.styles.dateRangeWrapper}>
+        <Calendar
+          focusedRange={this.state.focusedRange}
+          onRangeFocusChange={this.handleRangeFocusChange}
+          preview={this.state.preview}
+          onPreviewChange={value => {
+            this.updatePreview(value ? this.calcNewSelection(value) : null);
+          }}
+          {...this.props}
+          displayMode="dateRange"
+          className={classnames(this.props.className)}
+          onChange={this.setSelection}
+          updateRange={val => this.setSelection(val, false)}
+          ref={target => {
+            this.calendar = target;
+          }}
+        />
+        {showTimePicker && selectedRange && (
+          <div className={this.styles.timePickerContainer}>
+            <div className={this.styles.timePickerSection}>
+              <span className={this.styles.timePickerLabel}>Start Time</span>
+              <TimePicker
+                date={selectedRange.startDate}
+                onChange={date => this.handleTimeChange(date, true)}
+                showHours={showHours}
+                showMinutes={showMinutes}
+                disabled={selectedRange.disabled}
+                styles={this.styles}
+                ariaLabels={this.props.ariaLabels}
+              />
+            </div>
+            <div className={this.styles.timePickerSection}>
+              <span className={this.styles.timePickerLabel}>End Time</span>
+              <TimePicker
+                date={selectedRange.endDate}
+                onChange={date => this.handleTimeChange(date, false)}
+                showHours={showHours}
+                showMinutes={showMinutes}
+                disabled={selectedRange.disabled}
+                styles={this.styles}
+                ariaLabels={this.props.ariaLabels}
+              />
+            </div>
+          </div>
+        )}
+      </div>
     );
   }
 }
@@ -152,6 +219,9 @@ DateRange.defaultProps = {
   retainEndDateOnFirstSelection: false,
   rangeColors: ['#3d91ff', '#3ecf8e', '#fed14c'],
   disabledDates: [],
+  showTimePicker: false,
+  showHours: true,
+  showMinutes: true,
 };
 
 DateRange.propTypes = {
@@ -162,6 +232,9 @@ DateRange.propTypes = {
   ranges: PropTypes.arrayOf(rangeShape),
   moveRangeOnFirstSelection: PropTypes.bool,
   retainEndDateOnFirstSelection: PropTypes.bool,
+  showTimePicker: PropTypes.bool,
+  showHours: PropTypes.bool,
+  showMinutes: PropTypes.bool,
 };
 
 export default DateRange;
