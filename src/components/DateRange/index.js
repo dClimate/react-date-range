@@ -235,6 +235,7 @@ DateRange.defaultProps = {
   showTimePicker: false,
   showHours: true,
   showMinutes: true,
+  locale: undefined, // Will be inherited from Calendar.defaultProps
 };
 
 DateRange.propTypes = {

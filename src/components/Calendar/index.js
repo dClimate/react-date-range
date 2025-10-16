@@ -34,7 +34,8 @@ import { ariaLabelsShape } from '../../accessibility';
 class Calendar extends PureComponent {
   constructor(props, context) {
     super(props, context);
-    this.dateOptions = { locale: props.locale };
+    const locale = props.locale || defaultLocale;
+    this.dateOptions = { locale };
     if (props.weekStartsOn !== undefined) this.dateOptions.weekStartsOn = props.weekStartsOn;
     this.styles = generateStyles([coreStyles, props.classNames]);
     this.listSizeCache = {};
@@ -51,7 +52,8 @@ class Calendar extends PureComponent {
     };
   }
   getMonthNames() {
-    return [...Array(12).keys()].map(i => this.props.locale.localize.month(i));
+    const locale = this.props.locale || defaultLocale;
+    return [...Array(12).keys()].map(i => locale.localize.month(i));
   }
 
   calcScrollArea(props) {
