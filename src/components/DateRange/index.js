@@ -190,7 +190,6 @@ class DateRange extends Component {
             this.updatePreview(value ? this.calcNewSelection(value) : null);
           }}
           {...calendarProps}
-          ranges={ranges}
           locale={effectiveLocale}
           displayMode="dateRange"
           className={classnames(this.props.className)}
