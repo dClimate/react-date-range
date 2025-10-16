@@ -165,10 +165,20 @@ class DateRange extends Component {
   };
 
   render() {
-    const { showTimePicker, showHours, showMinutes, ranges, minTime, maxTime } = this.props;
+    const {
+      showTimePicker,
+      showHours,
+      showMinutes,
+      ranges,
+      minTime,
+      maxTime,
+      locale,
+      ...calendarProps
+    } = this.props;
     const focusedRange = this.props.focusedRange || this.state.focusedRange;
     const focusedRangeIndex = focusedRange[0];
     const selectedRange = ranges[focusedRangeIndex];
+    const effectiveLocale = locale || Calendar.defaultProps.locale;
 
     return (
       <div className={this.styles.dateRangeWrapper}>
@@ -179,7 +189,8 @@ class DateRange extends Component {
           onPreviewChange={value => {
             this.updatePreview(value ? this.calcNewSelection(value) : null);
           }}
-          {...this.props}
+          {...calendarProps}
+          locale={effectiveLocale}
           displayMode="dateRange"
           className={classnames(this.props.className)}
           onChange={this.setSelection}
@@ -235,6 +246,7 @@ DateRange.defaultProps = {
   showTimePicker: false,
   showHours: true,
   showMinutes: true,
+  locale: Calendar.defaultProps.locale,
 };
 
 DateRange.propTypes = {
