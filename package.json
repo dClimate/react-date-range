@@ -10,6 +10,7 @@
     "build:js": "babel ./src --out-dir ./dist --ignore test.js",
     "lint": "eslint 'src/**/*.js'",
     "test": "jest",
+    "prepare": "yarn install && yarn build",
     "preversion": "yarn clear & yarn build"
   },
   "keywords": [
